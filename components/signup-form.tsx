@@ -23,31 +23,39 @@ import { Spinner } from "./ui/spinner";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 
-const signInFormSchema = z.object({
-  email: z.email({ message: "Invalid email email address" }),
-  password: z.string().min(3, {
-    message: "Password us required",
-  }),
-});
+const signUpFormSchema = z
+  .object({
+    email: z.email({ message: "Invalid email email address" }),
+    password: z.string().min(3, {
+      message: "Password us required",
+    }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password don't match",
+    path: ["confirmPassword"],
+  });
 
-type SignInFormValues = z.infer<typeof signInFormSchema>;
+type SignUpFormValues = z.infer<typeof signUpFormSchema>;
 
-export default function SignInForm() {
+export default function SignUpForm() {
   const router = useRouter();
   const [isLoading, setIsloading] = useState(false);
-  const form = useForm<SignInFormValues>({
-    resolver: zodResolver(signInFormSchema),
+  const form = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = async (values: SignInFormValues) => {
+  const onSubmit = async (values: SignUpFormValues) => {
     try {
       setIsloading(true);
-      await authClient.signIn.email(
+      await authClient.signUp.email(
         {
+          name: values.email,
           email: values.email,
           password: values.password,
           callbackURL: "/",
@@ -122,14 +130,31 @@ export default function SignInForm() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Confirm password"
+                      {...field}
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <Button type="submit" className="cursor-pointer">
-              {isLoading ? <Spinner className="size-6" /> : "Sign In"}
+              {isLoading ? <Spinner className="size-6" /> : "Sign Up"}
             </Button>
             <p>
-              Dont't have a an account?{" "}
-              <Link href={"/sign-up"} className="text-blue-900">
-                Sign up
+              Already have a an account?{" "}
+              <Link href="/sign-in" className="text-blue-900">
+                Sign In
               </Link>
             </p>
 
