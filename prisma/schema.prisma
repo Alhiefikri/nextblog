@@ -92,7 +92,7 @@ model Post {
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   categoryId String?
   category Category? @relation(references: [id], fields: [categoryId], onDelete: Cascade)
-  createAt DateTime @default(now())
+  createdAt DateTime @default(now())
   updateAt DateTime @default(now()) @updatedAt
 }
 
@@ -102,7 +102,7 @@ model Category {
   userId String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   posts Post[]
-  createAt DateTime @default(now())
+  createdAt DateTime @default(now())
   updateAt DateTime @default(now()) @updatedAt
 }
 

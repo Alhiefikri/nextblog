@@ -2,10 +2,18 @@ import { headers } from "next/headers";
 import { auth } from "./auth";
 import { redirect } from "next/navigation";
 
-const authSession = async () => {
-  const session = auth.api.getSession({ headers: await headers() });
+export const authSession = async () => {
+  try {
+    const session = auth.api.getSession({ headers: await headers() });
 
-  return session;
+    if (!session) {
+      throw new Error("Unauthorized: No valid session found");
+    }
+    return session;
+  } catch (error) {
+    console.log({ error });
+    throw new Error("Authentication failed");
+  }
 };
 
 export const requireAuth = async () => {
