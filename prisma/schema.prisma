@@ -100,7 +100,7 @@ model Category {
    id String @id @default(uuid())
   name String
   userId String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User     @relation(references: [id], fields: [userId], onDelete: Cascade)
   posts Post[]
   createdAt DateTime @default(now())
   updateAt DateTime @default(now()) @updatedAt

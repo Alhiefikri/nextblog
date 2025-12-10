@@ -1,6 +1,17 @@
 "use client";
 
-import z, { object, string } from "zod";
+import { createPost, updatePost } from "@/app/actions/posts";
+import { generateSlug } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { object, z } from "zod";
+import ImageUploader from "./image-uploader";
+import RichTextEditor from "./toolbars/editor";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Form,
   FormControl,
@@ -9,12 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "./ui/input";
-import ImageUploader from "./image-uploader";
-import dynamic from "next/dynamic";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Select,
   SelectContent,
@@ -22,10 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { generateSlug } from "@/lib/utils";
+import { Spinner } from "./ui/spinner";
 
 const CreatableSelect = dynamic(() => import("react-select/creatable"), {
   ssr: false,
@@ -43,7 +46,7 @@ const formSchema = z.object({
   slug: z.string().min(3, { message: "Slug is required" }),
 });
 
-export type FormValues = z.infer<typeof formSchema>;
+export type PostFormValues = z.infer<typeof formSchema>;
 
 export default function PostForm({
   id,
@@ -55,7 +58,7 @@ export default function PostForm({
   status,
   categories,
   slug,
-}: FormValues) {
+}: PostFormValues) {
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -64,22 +67,24 @@ export default function PostForm({
       title,
       content,
       imageUrl,
-      categoryId,
-      tags,
       categories,
+      categoryId,
       status,
       slug,
+      tags,
     },
     mode: "onBlur",
   });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: PostFormValues) => {
     if (id) {
-      // TODO
+      await updatePost(data);
+      toast.success("Post updated successfully");
+    } else {
+      await createPost(data);
+      toast.success("Post created successfully");
     }
 
-    await createPost(data);
-    toast.success("Post created successfully");
     router.refresh();
     router.push("/posts");
   };
@@ -87,10 +92,10 @@ export default function PostForm({
   return (
     <Form {...form}>
       <form
-        className="grid grid-cols-2  gap-6"
+        className="grid grid-cols-2 gap-6"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 py-6">
           <FormField
             control={form.control}
             name="title"
@@ -116,6 +121,7 @@ export default function PostForm({
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="slug"
@@ -129,6 +135,7 @@ export default function PostForm({
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="imageUrl"
@@ -144,6 +151,7 @@ export default function PostForm({
                     }}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -155,12 +163,16 @@ export default function PostForm({
               <FormItem>
                 <FormLabel>Content</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <RichTextEditor
+                    content={field.value}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="tags"
@@ -177,11 +189,12 @@ export default function PostForm({
                         label: value,
                         value: value.toLocaleLowerCase(),
                       };
-                      field.onChange({ ...field.value, newOption });
+                      field.onChange([...field.value, newOption]);
                     }}
-                    components={{ IndicatorSeparator: () => null }}
+                    components={{ IndicatorsContainer: () => null }}
                   />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -189,7 +202,7 @@ export default function PostForm({
         <div className="flex flex-col gap-6">
           <Card className="w-full max-w-sm">
             <CardHeader>
-              <CardTitle>Extra Settings</CardTitle>
+              <CardTitle>Extra Settins</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-6">
               <FormField
@@ -216,6 +229,7 @@ export default function PostForm({
                         </SelectContent>
                       </Select>
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -233,10 +247,10 @@ export default function PostForm({
                         defaultValue={status}
                       >
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Category" />
+                          <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
-                          {["Publish", "Draft"]?.map((status) => (
+                          {["published", "draft"].map((status) => (
                             <SelectItem key={status} value={status}>
                               {status}
                             </SelectItem>
@@ -244,6 +258,7 @@ export default function PostForm({
                         </SelectContent>
                       </Select>
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -256,7 +271,11 @@ export default function PostForm({
           className="max-w-40 cursor-pointer"
           disabled={!form.formState.isValid || form.formState.isSubmitting}
         >
-          Save Chanages
+          {form.formState.isSubmitting ? (
+            <Spinner className="size-6" />
+          ) : (
+            "Save changes"
+          )}
         </Button>
       </form>
     </Form>
