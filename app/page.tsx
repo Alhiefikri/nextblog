@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { getPosts } from "@/app/actions/posts";
 import PostCard from "@/components/post-card";
+import Header from "@/components/header";
+import { NavMenu } from "@/components/navbar";
 
 export default async function Home({
   searchParams,
@@ -12,6 +14,10 @@ export default async function Home({
   const { posts, totalPages, currentPage } = await getPosts(page);
   return (
     <>
+      <div className="relative w-full">
+        <NavMenu />
+      </div>
+      <Header />
       <div className="flex flex-col gap-6 justify-center">
         <div className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
           {posts.map((post) => (
