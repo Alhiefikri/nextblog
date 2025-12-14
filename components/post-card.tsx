@@ -1,17 +1,16 @@
 "use client";
 
 import { Category, Post } from "@/app/generated/prisma/client";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { stripHtml } from "@/lib/utils";
+import { format } from "date-fns";
+import { MoveRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
-import { format } from "date-fns";
-import { MoveRight } from "lucide-react";
-import RichTextViewer from "./rich-text-viewer";
-import { stripHtml } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 interface PostProps {
-  post: Post & { category: Category } & {
+  post: Post & { category: Category | null } & {
     user: {
       name: string;
       id: string;
@@ -32,16 +31,16 @@ export default function PostCard({ post }: PostProps) {
           alt={post.title}
           fill
           className="rounded-sm object-cover"
-          sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 33vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       <CardHeader className="gap-0">
-        <CardTitle className="font-semibold line-clamp-3">
+        <CardTitle className="font-semibold line-clamp-3 pt-2">
           {post.title}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm line-clamp-3">{excertp}</p>
+        <p className="text-sm line-clamp-3">{excertp} </p>
 
         <div className="flex gap-2 py-6 flex-wrap">
           {post.tags.map((tag) => (
@@ -59,7 +58,7 @@ export default function PostCard({ post }: PostProps) {
                 src={post.user.image!}
                 alt={post.user.name}
                 fill
-                sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             </div>
 
@@ -75,7 +74,7 @@ export default function PostCard({ post }: PostProps) {
 
           <Link
             href={`/blog/posts/${post.slug}`}
-            className="flex gap-1 text-xs items-center font-medium"
+            className="flex gap-1 text-sx items-center font-medium"
           >
             Read more <MoveRight />
           </Link>

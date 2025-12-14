@@ -3,25 +3,25 @@ import Header from "@/components/header";
 import Pagination from "@/components/pagination";
 import PostCard from "@/components/post-card";
 
-
-export default async function CategoryPage({
+export default async function TagPage({
   params,
   searchParams,
 }: {
   searchParams: Promise<{ page?: string }>;
-  params: Promise<{ id: string }>;
+  params: Promise<{ name: string }>;
 }) {
-  const { id } = await params;
+  const { name } = await params;
   const searchArgs = await searchParams;
 
   const page = Number(searchArgs.page) || 1;
-  const { posts, totalPages, currentPage } = await getPostsByCategory(id, page);
-
-  const foundPost = posts.find((post) => post.categoryId === id);
+  const { posts, totalPages, currentPage } = await getPostsByCategory(
+    name,
+    page
+  );
 
   return (
     <>
-      <Header about={foundPost?.category?.name} />
+      <Header about={name} />
       <div className="flex flex-col gap-6 justify-between h-full min-h-dvh">
         <div className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-4 gap-6 my-8">
           {posts.map((post) => (
@@ -33,7 +33,7 @@ export default async function CategoryPage({
             page={page}
             currentPage={currentPage}
             totalPages={totalPages}
-            pageUrl={`/blog/category/${id}`}
+            pageUrl={`/blog/category/${name}`}
           />
         )}
       </div>
