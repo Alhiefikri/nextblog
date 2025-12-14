@@ -1,6 +1,6 @@
 "use client";
 
-import { removeCategory } from "@/app/actions/categories";
+import { removePost } from "@/app/actions/posts";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,7 +29,7 @@ const CellActions = ({ id }: { id: string }) => {
   const onRemovePost = async () => {
     try {
       setIsLoading(true);
-      // await onRemovePost(id);
+      await removePost(id);
     } catch (error: any) {
       throw new Error(`Something went wrong ${error}`);
     } finally {
@@ -74,7 +74,7 @@ const CellActions = ({ id }: { id: string }) => {
             aria-description="delete category"
           >
             <DialogHeader className="gap-6">
-              <DialogTitle>Delete Category</DialogTitle>
+              <DialogTitle>Delete Post</DialogTitle>
               <DialogDescription className="flex flex-col ">
                 <span className="text-md">
                   Are you sure want to delete

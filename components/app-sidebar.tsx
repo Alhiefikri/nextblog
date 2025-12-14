@@ -24,7 +24,7 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Category",
+    title: "User",
     url: "categories",
     icon: Calendar,
   },
@@ -40,7 +40,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>NextBlog</SidebarGroupLabel>
+          <SidebarGroupLabel></SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

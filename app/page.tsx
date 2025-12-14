@@ -3,6 +3,7 @@ import { getPosts } from "@/app/actions/posts";
 import PostCard from "@/components/post-card";
 import Header from "@/components/header";
 import { NavMenu } from "@/components/navbar";
+import Pagination from "@/components/pagination";
 
 export default async function Home({
   searchParams,
@@ -24,6 +25,13 @@ export default async function Home({
             <PostCard post={post} key={post.id} />
           ))}
         </div>
+        {posts.length > 0 && (
+          <Pagination
+            page={page}
+            currentPage={currentPage}
+            totalPages={totalPages}
+          />
+        )}
       </div>
     </>
   );

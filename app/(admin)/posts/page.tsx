@@ -11,8 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { columns } from "./clients/columns";
+import { requireAuth } from "@/lib/auth-utils";
 
 export default async function PostsPage() {
+  await requireAuth();
   const data = await getAllPosts();
   return (
     <>

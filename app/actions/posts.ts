@@ -86,6 +86,7 @@ export const getAllPosts = async () => {
     }
 
     const res = await prisma.post.findMany({
+      take: 10,
       where: { userId: session.user.id },
       orderBy: { updateAt: "desc" },
       include: { category: true },
