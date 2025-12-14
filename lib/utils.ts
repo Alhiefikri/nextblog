@@ -40,4 +40,3 @@ export const getNameInitials = (name: string) => {
     .map((part) => part.charAt(0))
     .join("");
 };
-

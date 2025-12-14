@@ -4,6 +4,7 @@ import PostCard from "@/components/post-card";
 import Header from "@/components/header";
 import { NavMenu } from "@/components/navbar";
 import Pagination from "@/components/pagination";
+import { authSession } from "@/lib/auth-utils";
 
 export default async function Home({
   searchParams,
@@ -13,10 +14,11 @@ export default async function Home({
   const params = await searchParams;
   const page = Number(params.page) || 1;
   const { posts, totalPages, currentPage } = await getPosts(page);
+  const session = await authSession();
   return (
     <>
       <div className="relative w-full">
-        <NavMenu />
+        <NavMenu name={session?.user.name} />
       </div>
       <Header />
       <div className="flex flex-col gap-6 justify-center">

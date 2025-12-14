@@ -15,8 +15,10 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { getNameInitials } from "@/lib/utils";
 
-export function NavMenu() {
+export function NavMenu({ name }: { name?: string }) {
   const isMobile = useIsMobile();
 
   return (
@@ -30,7 +32,15 @@ export function NavMenu() {
 
         <NavigationMenuList className="flex-wrap">
           <NavigationMenuItem className="hidden md:block">
-            <NavigationMenuTrigger>user</NavigationMenuTrigger>
+            <NavigationMenuTrigger>
+              <Avatar className="w-8 h-8 rounded-full">
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  className="rounded-full"
+                />
+                <AvatarFallback>{getNameInitials(name || "")}</AvatarFallback>
+              </Avatar>
+            </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[200px] gap-4">
                 <li>

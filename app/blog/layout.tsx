@@ -1,15 +1,17 @@
 import { NavMenu } from "@/components/navbar";
+import { authSession } from "@/lib/auth-utils";
 import React from "react";
 
-export default function BlogLayout({
+export default async function BlogLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await authSession();
   return (
     <>
       <div className="relative w-full">
-        <NavMenu />
+        <NavMenu name={session?.user.name} />
         {children}
       </div>
     </>
