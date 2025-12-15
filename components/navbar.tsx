@@ -18,7 +18,13 @@ import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { getNameInitials } from "@/lib/utils";
 
-export function NavMenu({ name }: { name?: string }) {
+export function NavMenu({
+  userName,
+  userImage,
+}: {
+  userName?: string;
+  userImage?: string;
+}) {
   const isMobile = useIsMobile();
 
   return (
@@ -34,11 +40,8 @@ export function NavMenu({ name }: { name?: string }) {
           <NavigationMenuItem className="hidden md:block">
             <NavigationMenuTrigger>
               <Avatar className="w-8 h-8 rounded-full">
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  className="rounded-full"
-                />
-                <AvatarFallback>{getNameInitials(name || "")}</AvatarFallback>
+                <AvatarImage src={userImage} className="rounded-full" />
+                <AvatarFallback>{getNameInitials(userName!)}</AvatarFallback>
               </Avatar>
             </NavigationMenuTrigger>
             <NavigationMenuContent>
