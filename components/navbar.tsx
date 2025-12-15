@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
+
 import Link from "next/link";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, LogOut, Search } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -17,6 +17,8 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { getNameInitials } from "@/lib/utils";
+import { useState } from "react";
+import GlobalSearchModal from "./global-search-modal";
 
 export function NavMenu({
   userName,
@@ -26,6 +28,7 @@ export function NavMenu({
   userImage?: string;
 }) {
   const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <NavigationMenu viewport={isMobile} className="mx-auto max-w-full my-5">
@@ -37,6 +40,15 @@ export function NavMenu({
         </NavigationMenuList>
 
         <NavigationMenuList className="flex-wrap">
+          <NavigationMenuItem className="hidden md:block">
+            <div
+              className="mr-6 cursor-pointer"
+              onClick={() => setIsOpen(true)}
+            >
+              <Search />
+            </div>
+            <GlobalSearchModal setIsOpen={setIsOpen} isOpen={isOpen} />
+          </NavigationMenuItem>
           <NavigationMenuItem className="hidden md:block">
             <NavigationMenuTrigger>
               <Avatar className="w-8 h-8 rounded-full">
