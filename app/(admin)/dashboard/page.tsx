@@ -6,6 +6,8 @@ import DashboardCard from "@/components/DashboardCard";
 import { authSession, requireAuth } from "@/lib/auth-utils";
 import { Rocket } from "lucide-react";
 import Link from "next/link";
+export const dynamic = "force-dynamic";
+
 
 export default async function DashBoardPage() {
   await requireAuth();
